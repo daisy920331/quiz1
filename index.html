@@ -257,30 +257,53 @@
       $streak.textContent = streak;
       $progressText.textContent = `0/${deck.length}`;
 
-      renderStart();
-    }
-
-    function renderStart(){
-      $card.innerHTML = `
-        <div class="start">
-          <div class="big">準備好了嗎？</div>
-          <p class="sub">共 ${deck.length} 題｜每題選項會洗牌｜答對 +1 分</p>
-          <p class="sub">連續答對會額外加分（看下方規則）</p>
-          <div class="actions" style="justify-content:center;">
-            <button class="btn" id="startBtn">開始遊戲</button>
-            <button class="btn secondary" id="reshuffleBtn">重新洗牌題目</button>
-          </div>
+  function renderStart(){
+  $card.innerHTML = `
+    <div class="start">
+      <div class="big">
+        準備好了嗎？
+        <div style="font-size:16px; font-weight:800; color:#64748b; margin-top:4px;">
+          Are you ready?
         </div>
-      `;
-      document.getElementById("startBtn").onclick = () => renderQuestion();
-      document.getElementById("reshuffleBtn").onclick = () => {
-        deck = shuffle(QUESTIONS);
-        idx = 0;
-        $progressText.textContent = `0/${deck.length}`;
-        renderStart();
-      };
-    }
+      </div>
 
+      <p class="sub">
+        共 ${deck.length} 題｜每題選項會洗牌｜答對 +1 分
+        <br>
+        <span style="font-size:13px; color:#64748b;">
+          ${deck.length} questions | Options are shuffled | +1 point for each correct answer
+        </span>
+      </p>
+
+      <p class="sub">
+        連續答對會額外加分（看下方規則）
+        <br>
+        <span style="font-size:13px; color:#64748b;">
+          Extra points are awarded for correct answers in a row (see rules below)
+        </span>
+      </p>
+
+      <div class="actions" style="justify-content:center;">
+        <button class="btn" id="startBtn">
+          開始遊戲
+          <div style="font-size:12px; font-weight:700;">Start Game</div>
+        </button>
+
+        <button class="btn secondary" id="reshuffleBtn">
+          重新洗牌題目
+          <div style="font-size:12px; font-weight:700;">Reshuffle Questions</div>
+        </button>
+      </div>
+    </div>
+  `;
+  document.getElementById("startBtn").onclick = () => renderQuestion();
+  document.getElementById("reshuffleBtn").onclick = () => {
+    deck = shuffle(QUESTIONS);
+    idx = 0;
+    $progressText.textContent = \`0/\${deck.length}\`;
+    renderStart();
+  };
+}
     function renderQuestion(){
       locked = false;
 
@@ -446,4 +469,5 @@
   </script>
 </body>
 </html>
+
 
