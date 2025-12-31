@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第一課｜練習目錄</title>
+  <style>
+    :root{
+      --card:#ffffff;
+      --bg:#e9f7ff;
+      --ink:#0f172a;
+      --muted:#64748b;
+      --brand:#0ea5e9;
+      --line:#e2e8f0;
+      --soft:#f8fafc;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(180deg, var(--bg), #ffffff);
+      color: var(--ink);
+    }
+    .wrap{ max-width: 980px; margin:0 auto; padding: 20px; }
+
+    /* Header */
+    .header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 16px;
+      flex-wrap:wrap;
+    }
+    .title{
+      font-size: 24px;
+      font-weight: 950;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .subtitle{
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 12px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#0369a1;
+      font-weight:900;
+      font-size:12px;
+      border:1px solid #bfdbfe;
+      height: fit-content;
+    }
+
+    /* Grid */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    /* Card */
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.08);
+      padding: 16px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      min-height: 180px;
+    }
+    .card h3{
+      margin:0;
+      font-size: 18px;
+      font-weight: 950;
+    }
+    .desc{
+      margin:0;
+      color: var(--muted);
+      font-weight: 800;
+      line-height:1.5;
+      font-size: 14px;
+    }
+    .tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .tag{
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    /* Buttons */
+    .actions{
+      margin-top:auto;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    a.btn{
+      text-decoration:none;
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-weight: 950;
+      border: 1px solid var(--line);
+      background: var(--brand);
+      color:white;
+      flex: 1 1 auto;
+      font-size: 15px;
+    }
+    a.btn.secondary{
+      background: white;
+      color: var(--ink);
+    }
+
+    /* Note */
+    .note{
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px dashed #cbd5e1;
+      background: var(--soft);
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    /* Mobile */
+    @media (max-width: 900px){
+      .grid{
+        grid-template-columns: 1fr;
+      }
+      a.btn{
+        width: 100%;
+        font-size: 16px;
+        padding: 14px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- Header -->
+    <div class="header">
+      <div class="title">
+        第一課｜練習目錄
+        <div class="subtitle">
+          Lesson 1 • Practice Menu
+        </div>
+      </div>
+      <div class="badge">📘 第一課</div>
+    </div>
+
+    <!-- Practice Grid -->
+    <div class="grid">
+      <!-- 練習一 -->
+      <div class="card">
+        <h3>練習一：選擇題</h3>
+        <p class="desc">
+          選出正確的答案，適合暖身或課堂快速檢核理解。
+        </p>
+        <div class="tags">
+          <span class="tag">選擇題</span>
+          <span class="tag">即時回饋</span>
+          <span class="tag">手機友善</span>
+        </div>
+        <div class="actions">
+          <a class="btn" href="quiz1-1.html">開始練習</a>
+          <a class="btn secondary" href="quiz1-1.html">Open</a>
+        </div>
+      </div>
+
+      <!-- 練習二 -->
+      <div class="card">
+        <h3>練習二：選擇題＋填充題</h3>
+        <p class="desc">
+          先作答選擇題，再完成填充題（使用 p2 辭庫）。
+        </p>
+        <div class="tags">
+          <span class="tag">選擇＋填充</span>
+          <span class="tag">辭庫練習</span>
+          <span class="tag">自動判分</span>
+        </div>
+        <div class="actions">
+          <a class="btn" href="quiz1-2.html">開始練習</a>
+          <a class="btn secondary" href="quiz1-2.html">Open</a>
+        </div>
+      </div>
+
+      <!-- 練習三 -->
+      <div class="card">
+        <h3>練習三：閱讀短文</h3>
+        <p class="desc">
+          閱讀短文後，回答理解選擇題，培養閱讀理解能力。
+        </p>
+        <div class="tags">
+          <span class="tag">閱讀理解</span>
+          <span class="tag">短文</span>
+          <span class="tag">選擇題</span>
+        </div>
+        <div class="actions">
+          <a class="btn" href="quiz1-3.html">開始練習</a>
+          <a class="btn secondary" href="quiz1-3.html">Open</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Note -->
+    <div class="note">
+      📌 使用說明：<br>
+      本頁為「第一課練習目錄」。請確保以下三個檔案與本頁放在同一個 GitHub repo 根目錄：<br>
+      <b>quiz1-1.html</b>、<b>quiz1-2.html</b>、<b>quiz1-3.html</b>。<br><br>
+      上線後的入口網址為：<br>
+      <b>https://你的帳號.github.io/你的repo名/</b>
+    </div>
+  </div>
+</body>
+</html>
