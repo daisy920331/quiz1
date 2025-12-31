@@ -112,7 +112,7 @@
     .big{ font-size: 26px; font-weight: 950; margin: 4px 0 0; }
     .sub{ color:var(--muted); font-weight: 800; margin: 0; }
 
-    .footer-note{ margin-top:10px; color:var(--muted); font-size: 12px; font-weight: 800; }
+    .footer-note{ margin-top:10px; color:var(--muted); font-size: 12px; font-weight: 800; line-height: 1.4; }
 
     /* ✅ 手機專用大按鈕版（<=600px） */
     @media (max-width: 600px){
@@ -141,6 +141,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="header">
@@ -156,13 +157,18 @@
     </div>
 
     <div class="card" id="card"></div>
+
+    <!-- ✅ 底部規則：中英雙語 -->
     <div class="footer-note">
-      連續答對加分規則：連續達到 2、3、4、5 題時，分別額外 +1、+1、+1、+2（你可在 JS 內調整）。
+      <div>連續答對加分規則：連續達到 2、3、4、5 題時，分別額外 +1、+1、+1、+2（你可在 JS 內調整）。</div>
+      <div style="margin-top:4px; font-weight:700; font-size:11px; opacity:.9;">
+        Streak bonus: when you answer 2, 3, 4, or 5 questions correctly in a row, you gain extra points (+1, +1, +1, +2). You can adjust this in the JavaScript settings.
+      </div>
     </div>
   </div>
 
   <script>
-    // ✅ 題庫：每個選項帶 correct:true/false（這樣洗牌後仍知道答案）
+    // ✅ 題庫（選項帶 correct:true/false）
     const QUESTIONS = [
       {
         q: "哪一個是神話故事？",
@@ -199,9 +205,9 @@
       {
         q: "戰爭通常發生在：",
         options: [
-          { text: "國家或部族之間爭鬥", correct: false },
+          { text: "國家或部族之間爭鬥", correct: true },
           { text: "學校上課", correct: false },
-          { text: "河流流動", correct: true }
+          { text: "河流流動", correct: false }
         ]
       },
       {
@@ -214,16 +220,10 @@
       }
     ];
 
-    // ✅ 連續答對加分規則（可自行改）
-    // key = 連續答對數，value = 額外加分
-    const STREAK_BONUS = {
-      2: 1,
-      3: 1,
-      4: 1,
-      5: 2
-    };
+    // ✅ 連續答對加分規則（可改）
+    const STREAK_BONUS = { 2: 1, 3: 1, 4: 1, 5: 2 };
 
-    // --- 遊戲狀態 ---
+    // --- 狀態 ---
     let deck = [];
     let idx = 0;
     let score = 0;
@@ -257,53 +257,58 @@
       $streak.textContent = streak;
       $progressText.textContent = `0/${deck.length}`;
 
-  function renderStart(){
-  $card.innerHTML = `
-    <div class="start">
-      <div class="big">
-        準備好了嗎？
-        <div style="font-size:16px; font-weight:800; color:#64748b; margin-top:4px;">
-          Are you ready?
+      renderStart();
+    }
+
+    // ✅ 開始頁：整頁都有英文
+    function renderStart(){
+      $card.innerHTML = `
+        <div class="start">
+          <div class="big">
+            準備好了嗎？
+            <div style="font-size:16px; font-weight:800; color:#64748b; margin-top:4px;">
+              Are you ready?
+            </div>
+          </div>
+
+          <p class="sub">
+            共 ${deck.length} 題｜每題選項會洗牌｜答對 +1 分
+            <br>
+            <span style="font-size:13px; font-weight:700;">
+              ${deck.length} questions | Options are shuffled | +1 point for each correct answer
+            </span>
+          </p>
+
+          <p class="sub">
+            連續答對會額外加分（看下方規則）
+            <br>
+            <span style="font-size:13px; font-weight:700;">
+              Extra points are awarded for correct answers in a row (see rules below)
+            </span>
+          </p>
+
+          <div class="actions" style="justify-content:center;">
+            <button class="btn" id="startBtn">
+              開始遊戲
+              <div style="font-size:12px; font-weight:700;">Start Game</div>
+            </button>
+
+            <button class="btn secondary" id="reshuffleBtn">
+              重新洗牌題目
+              <div style="font-size:12px; font-weight:700;">Reshuffle Questions</div>
+            </button>
+          </div>
         </div>
-      </div>
+      `;
 
-      <p class="sub">
-        共 ${deck.length} 題｜每題選項會洗牌｜答對 +1 分
-        <br>
-        <span style="font-size:13px; color:#64748b;">
-          ${deck.length} questions | Options are shuffled | +1 point for each correct answer
-        </span>
-      </p>
-
-      <p class="sub">
-        連續答對會額外加分（看下方規則）
-        <br>
-        <span style="font-size:13px; color:#64748b;">
-          Extra points are awarded for correct answers in a row (see rules below)
-        </span>
-      </p>
-
-      <div class="actions" style="justify-content:center;">
-        <button class="btn" id="startBtn">
-          開始遊戲
-          <div style="font-size:12px; font-weight:700;">Start Game</div>
-        </button>
-
-        <button class="btn secondary" id="reshuffleBtn">
-          重新洗牌題目
-          <div style="font-size:12px; font-weight:700;">Reshuffle Questions</div>
-        </button>
-      </div>
-    </div>
-  `;
-  document.getElementById("startBtn").onclick = () => renderQuestion();
-  document.getElementById("reshuffleBtn").onclick = () => {
-    deck = shuffle(QUESTIONS);
-    idx = 0;
-    $progressText.textContent = \`0/\${deck.length}\`;
-    renderStart();
-  };
-}
+      document.getElementById("startBtn").onclick = () => renderQuestion();
+      document.getElementById("reshuffleBtn").onclick = () => {
+        deck = shuffle(QUESTIONS);
+        idx = 0;
+        $progressText.textContent = `0/${deck.length}`;
+        renderStart();
+      };
+    }
 
     function renderQuestion(){
       locked = false;
@@ -311,9 +316,8 @@
       const item = deck[idx];
       const qno = idx + 1;
 
-      // ✅ 選項洗牌（每次出題都會隨機）
+      // ✅ 選項洗牌
       const shuffledOptions = shuffle(item.options);
-
       $progressText.textContent = `${qno}/${deck.length}`;
 
       const keys = ["A", "B", "C"];
@@ -331,7 +335,6 @@
         </div>
 
         <div class="question">${item.q}</div>
-
         <div class="options">${optionsHTML}</div>
 
         <div id="feedback" class="feedback"></div>
@@ -346,21 +349,18 @@
         </div>
       `;
 
-      // 進度條
-      const pct = Math.round(((idx) / deck.length) * 100);
+      const pct = Math.round((idx / deck.length) * 100);
       document.getElementById("bar").style.width = pct + "%";
 
       function disableAllOptions(){
         document.querySelectorAll("button.opt").forEach(b => b.disabled = true);
       }
-
       function highlightCorrect(){
         document.querySelectorAll("button.opt").forEach(b => {
           if (b.dataset.correct === "true") b.style.borderColor = "var(--good)";
         });
       }
 
-      // 綁定選項
       document.querySelectorAll("button.opt").forEach(btn => {
         btn.addEventListener("click", () => {
           if (locked) return;
@@ -372,10 +372,9 @@
 
           if (isCorrect) {
             streak += 1;
-            let add = 1; // 基本 +1
+            let add = 1;
             const bonus = STREAK_BONUS[streak] || 0;
             add += bonus;
-
             score += add;
 
             $score.textContent = score;
@@ -388,7 +387,6 @@
           } else {
             streak = 0;
             $streak.textContent = streak;
-
             fb.className = "feedback no";
             fb.textContent = `❌ 答錯了！連續歸零。`;
           }
@@ -399,41 +397,56 @@
         });
       });
 
-      // 跳過：不計分，但連續歸零（比較公平；若你想跳過不歸零，我也可幫你改）
       document.getElementById("skipBtn").onclick = () => {
         streak = 0;
         $streak.textContent = streak;
-        if (idx < deck.length - 1) {
-          idx++;
-          renderQuestion();
-        } else {
-          renderEnd();
-        }
+        if (idx < deck.length - 1) { idx++; renderQuestion(); }
+        else { renderEnd(); }
       };
 
       document.getElementById("nextBtn").onclick = () => {
-        if (idx < deck.length - 1) {
-          idx++;
-          renderQuestion();
-        } else {
-          renderEnd();
-        }
+        if (idx < deck.length - 1) { idx++; renderQuestion(); }
+        else { renderEnd(); }
       };
     }
 
     function renderEnd(){
       const total = deck.length;
-      const pct = Math.round((score / (total)) * 100);
 
       $card.innerHTML = `
         <div class="start">
-          <div class="big">遊戲結束！</div>
-          <p class="sub">你的分數：<b style="color:var(--brand);">${score}</b>（共 ${total} 題）</p>
-          <p class="sub">最後連續：<b style="color:var(--brand);">${streak}</b></p>
+          <div class="big">
+            遊戲結束！
+            <div style="font-size:16px; font-weight:800; color:#64748b; margin-top:4px;">
+              Game Over!
+            </div>
+          </div>
+
+          <p class="sub">
+            你的分數：<b style="color:var(--brand);">${score}</b>（共 ${total} 題）
+            <br>
+            <span style="font-size:13px; font-weight:700;">
+              Your score: <b style="color:var(--brand);">${score}</b> / ${total}
+            </span>
+          </p>
+
+          <p class="sub">
+            最後連續：<b style="color:var(--brand);">${streak}</b>
+            <br>
+            <span style="font-size:13px; font-weight:700;">
+              Final streak: <b style="color:var(--brand);">${streak}</b>
+            </span>
+          </p>
 
           <div class="actions" style="justify-content:center;">
-            <button class="btn" id="restartBtn">再玩一次</button>
-            <button class="btn secondary" id="reviewBtn">查看題目與答案</button>
+            <button class="btn" id="restartBtn">
+              再玩一次
+              <div style="font-size:12px; font-weight:700;">Play Again</div>
+            </button>
+            <button class="btn secondary" id="reviewBtn">
+              查看題目與答案
+              <div style="font-size:12px; font-weight:700;">Review Answers</div>
+            </button>
           </div>
 
           <div id="review" style="display:none; text-align:left; margin-top:10px;"></div>
@@ -447,7 +460,9 @@
         box.style.display = box.style.display === "none" ? "block" : "none";
 
         box.innerHTML = `
-          <div class="pill" style="display:inline-block; margin-bottom:10px;">本次題目順序（答案以「內容」為準）</div>
+          <div class="pill" style="display:inline-block; margin-bottom:10px;">
+            本次題目順序（答案以「內容」為準） / Question list (answers by content)
+          </div>
           <div style="display:grid; gap:10px;">
             ${deck.map((it, i) => {
               const ans = it.options.find(o => o.correct);
@@ -455,7 +470,10 @@
                 <div style="border:1px solid var(--line); border-radius:14px; padding:10px;">
                   <div style="font-weight:950; color:var(--brand);">${i+1}. ${it.q}</div>
                   <div style="color:var(--muted); font-weight:800; margin-top:4px;">
-                    正確答案：${ans ? ans.text : "（未設定）"}
+                    正確答案：${ans ? ans.text : "（未設定）"}<br>
+                    <span style="font-size:12px; font-weight:700;">
+                      Correct answer: ${ans ? ans.text : "(not set)"}
+                    </span>
                   </div>
                 </div>
               `;
@@ -470,8 +488,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
