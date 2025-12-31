@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第一課・練習三：閱讀短文</title>
+  <style>
+    :root{
+      --card:#ffffff; --bg:#e9f7ff; --ink:#0f172a; --muted:#64748b;
+      --good:#16a34a; --bad:#dc2626; --brand:#0ea5e9; --line:#e2e8f0; --soft:#f8fafc;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(180deg, var(--bg), #ffffff);
+      color: var(--ink);
+    }
+    .wrap{ max-width: 980px; margin:0 auto; padding: 20px; }
+    .header{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      margin-bottom: 14px; flex-wrap:wrap;
+    }
+    .title{ display:flex; align-items:center; gap:10px; font-size: 20px; font-weight: 900; }
+    .badge{
+      font-size: 12px; color:#0369a1; background:#dbeafe;
+      padding:4px 10px; border-radius:999px; font-weight:800;
+    }
+    .stats{ display:flex; gap:10px; align-items:center; color:var(--muted); font-weight:800; flex-wrap:wrap; }
+    .pill{
+      background:#f1f5f9; border:1px solid var(--line);
+      padding:6px 10px; border-radius:999px;
+    }
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.08);
+      padding: 16px;
+    }
+
+    .sectionTag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius: 999px;
+      background:#f1f5f9; border:1px solid var(--line);
+      font-weight: 900; color: var(--brand); margin-bottom: 10px;
+    }
+
+    .reading{
+      border:1px solid var(--line);
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 14px;
+      line-height: 1.75;
+      font-weight: 800;
+    }
+    .reading p{ margin: 0 0 10px; }
+    .reading p:last-child{ margin-bottom:0; }
+
+    .qno{ color:var(--brand); font-weight: 900; margin-top: 14px; }
+    .question{ font-size: 18px; font-weight: 900; line-height:1.45; margin: 8px 0 12px; }
+
+    .options{ display:grid; gap:10px; margin-top: 8px; }
+    button.opt{
+      width:100%;
+      text-align:left;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      cursor:pointer;
+      font-size: 16px;
+      font-weight: 800;
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      transition: transform .05s ease, border-color .2s ease, background .2s ease;
+    }
+    button.opt:hover{ border-color:#93c5fd; background: var(--soft); }
+    button.opt:active{ transform: scale(0.99); }
+    button.opt:disabled{ cursor:not-allowed; opacity: .92; }
+    .key{
+      flex: 0 0 auto;
+      width: 30px; height: 30px;
+      border-radius: 10px;
+      display:inline-grid; place-items:center;
+      background:#f1f5f9; border:1px solid var(--line);
+      color:var(--ink); font-weight: 900;
+      margin-top: 1px;
+    }
+
+    .feedback{
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      display:none;
+      font-weight: 900;
+      line-height: 1.4;
+      white-space: pre-line;
+    }
+    .feedback.ok{ border-color:#bbf7d0; background:#f0fdf4; color:#166534; display:block; }
+    .feedback.no{ border-color:#fecaca; background:#fef2f2; color:#991b1b; display:block; }
+
+    .actions{ display:flex; gap:10px; justify-content:flex-end; margin-top: 14px; flex-wrap:wrap; }
+    .btn{
+      border: 1px solid var(--line);
+      background: var(--brand);
+      color:white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 900;
+      cursor:pointer;
+    }
+    .btn.secondary{ background:#ffffff; color:var(--ink); }
+    .btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+    .progress{ height: 10px; width: 100%; background: var(--line); border-radius: 999px; overflow:hidden; margin-top: 12px; }
+    .bar{ height:100%; width:0%; background: linear-gradient(90deg, #22c55e, var(--brand)); transition: width .35s ease; }
+
+    /* ✅ 手機大按鈕 */
+    @media (max-width: 600px){
+      .wrap{ padding: 14px; }
+      .title{ font-size: 18px; }
+      button.opt{ font-size: 18px; padding: 18px 16px; border-radius: 16px; }
+      .key{ width: 38px; height: 38px; border-radius: 12px; font-size: 16px; }
+      .btn{ width: 100%; padding: 14px 16px; font-size: 16px; border-radius: 14px; }
+      .actions{ justify-content:stretch; }
+      .reading{ font-size: 16px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">
+        <span>第一課・練習三：閱讀短文</span>
+        <span class="badge" id="badge">Reading</span>
+      </div>
+      <div class="stats">
+        <span class="pill">分數：<span id="score">0</span></span>
+        <span class="pill">進度：<span id="progressText">0/2</span></span>
+      </div>
+    </div>
+
+    <div class="card" id="card"></div>
+  </div>
+
+  <script>
+    const READING_TEXT = [
+      "很久以前，有一個部族，他們相信許多神祇。",
+      "神祇有很大的權勢，可以主宰河流和天空。",
+      "部族的人常常因為神祇的命令而舉行戰爭。",
+      "河流從不同地方匯流到大海，象徵著力量的變動。",
+      "有些部族相信神權比人的權力更重要。"
+    ];
+
+    // ✅ 依你圖片：Q1 正確 b（神祇）／Q2 正確 b（神祇/神權）
+    const QUESTIONS = [
+      {
+        q: "誰可以主宰河流和天空？",
+        options: [
+          { text: "部族的人", correct: false },
+          { text: "神祇", correct: true },
+          { text: "河水", correct: false },
+          { text: "大海", correct: false }
+        ],
+        explain: "短文第 2 句：神祇有很大的權勢，可以主宰河流和天空。"
+      },
+      {
+        q: "部族的人相信誰的權力更重要？",
+        options: [
+          { text: "人", correct: false },
+          { text: "神祇（神權）", correct: true },
+          { text: "動物", correct: false },
+          { text: "植物", correct: false }
+        ],
+        explain: "短文最後一句：有些部族相信神權比人的權力更重要。"
+      }
+    ];
+
+    let idx = 0;
+    let score = 0;
+    let locked = false;
+
+    const $card = document.getElementById("card");
+    const $score = document.getElementById("score");
+    const $progressText = document.getElementById("progressText");
+    const $badge = document.getElementById("badge");
+
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function render(){
+      locked = false;
+      $progressText.textContent = `${idx}/${QUESTIONS.length}`;
+
+      if (idx === 0){
+        $badge.textContent = "Reading";
+        $card.innerHTML = `
+          <div class="sectionTag">閱讀短文</div>
+          <div class="reading">
+            ${READING_TEXT.map(s => `<p>${s}</p>`).join("")}
+          </div>
+          <div class="actions">
+            <button class="btn" id="startBtn">開始作答</button>
+          </div>
+        `;
+        document.getElementById("startBtn").onclick = () => {
+          idx = 1;
+          render();
+        };
+        return;
+      }
+
+      // 題目 index = idx-1
+      $badge.textContent = "Quiz";
+      const item = QUESTIONS[idx-1];
+      const qno = idx;
+
+      const opts = shuffle(item.options);
+      const keys = ["A","B","C","D"];
+      const optionsHTML = opts.map((opt, i) => `
+        <button class="opt" data-correct="${opt.correct}">
+          <span class="key">${keys[i]}</span>
+          <span>${opt.text}</span>
+        </button>
+      `).join("");
+
+      $card.innerHTML = `
+        <div class="sectionTag">選擇題・選出正確答案</div>
+
+        <div class="qno">第 ${qno} 題（共 ${QUESTIONS.length} 題）</div>
+        <div class="question">${item.q}</div>
+
+        <div class="options">${optionsHTML}</div>
+        <div id="feedback" class="feedback"></div>
+
+        <div class="actions">
+          <button class="btn secondary" id="skipBtn">跳過</button>
+          <button class="btn" id="nextBtn" disabled>${qno === QUESTIONS.length ? "完成" : "下一題"}</button>
+        </div>
+
+        <div class="progress"><div class="bar" id="bar"></div></div>
+      `;
+
+      document.getElementById("bar").style.width =
+        Math.round(((idx-1) / QUESTIONS.length) * 100) + "%";
+
+      function disableAll(){
+        document.querySelectorAll("button.opt").forEach(b => b.disabled = true);
+      }
+      function highlightCorrect(){
+        document.querySelectorAll("button.opt").forEach(b => {
+          if (b.dataset.correct === "true") b.style.borderColor = "var(--good)";
+        });
+      }
+
+      document.querySelectorAll("button.opt").forEach(btn => {
+        btn.onclick = () => {
+          if (locked) return;
+          locked = true;
+
+          const isCorrect = btn.dataset.correct === "true";
+          const fb = document.getElementById("feedback");
+          const nextBtn = document.getElementById("nextBtn");
+
+          if (isCorrect){
+            score += 1;
+            $score.textContent = score;
+            fb.className = "feedback ok";
+            fb.textContent = "✅ 答對了！+1 分\n" + item.explain;
+          } else {
+            fb.className = "feedback no";
+            fb.textContent = "❌ 答錯了。\n" + item.explain;
+          }
+
+          disableAll();
+          highlightCorrect();
+          nextBtn.disabled = false;
+        };
+      });
+
+      document.getElementById("skipBtn").onclick = () => {
+        goNext();
+      };
+      document.getElementById("nextBtn").onclick = () => {
+        goNext();
+      };
+
+      function goNext(){
+        if (idx-1 < QUESTIONS.length - 1){
+          idx += 1;
+          render();
+        } else {
+          renderEnd();
+        }
+      }
+    }
+
+    function renderEnd(){
+      $badge.textContent = "Done";
+      $progressText.textContent = `${QUESTIONS.length}/${QUESTIONS.length}`;
+
+      $card.innerHTML = `
+        <div class="start">
+          <div class="big">完成！</div>
+          <p class="sub">你的分數：<b style="color:var(--brand);">${score}</b> / ${QUESTIONS.length}</p>
+          <div class="actions" style="justify-content:center;">
+            <button class="btn" id="restartBtn">再玩一次</button>
+          </div>
+        </div>
+      `;
+      document.getElementById("restartBtn").onclick = () => {
+        idx = 0;
+        score = 0;
+        $score.textContent = score;
+        render();
+      };
+    }
+
+    // init
+    render();
+  </script>
+</body>
+</html>
